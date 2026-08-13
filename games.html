@@ -1,0 +1,3171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="FinalStyle.css">
+
+    <title>Travel Tycoon | Eli Fish</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #dbeafe, #f0fdf4);
+            color: #243447;
+        }
+
+       .game-header {
+            background-color: transparent;
+            color: #243447;
+            text-align: center;
+            padding: 30px 20px 10px 20px;
+        }
+
+        .game-header h1 {
+            margin: 0 0 8px 0;
+            font-size: 36px;
+            color: #1f3a5f;
+        }
+
+        .game-header p {
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+        }
+
+        h2 {
+            color: #1f3a5f;
+            margin-top: 0;
+        }
+
+        h3 {
+            color: #315b7d;
+        }
+
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            background-color: #1f3a5f;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: #315b7d;
+        }
+
+        button:disabled {
+            background-color: #999;
+            cursor: not-allowed;
+        }
+
+        .continent-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .continent {
+            padding: 25px 15px;
+            border: 2px solid #ccd6e0;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            background-color: #f8fafc;
+        }
+
+        .continent:hover {
+            transform: translateY(-3px);
+            border-color: #1f3a5f;
+            background-color: #eef5fb;
+        }
+
+        .continent.selected {
+            border-color: #1f3a5f;
+            background-color: #dcecff;
+        }
+
+        .emoji {
+            font-size: 40px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* MONEY */
+
+        .money-bar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background-color: #172f4d;
+            color: white;
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .money-title {
+            font-weight: bold;
+        }
+
+        .money-amount {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .money-remaining {
+            color: #8ff0ae;
+        }
+
+        /* STATS */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .stat {
+            background-color: #eef3f7;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 22px;
+            color: #1f3a5f;
+            margin-top: 5px;
+        }
+
+        /* AUCTION */
+
+        .auction-box {
+            text-align: center;
+        }
+
+        .your-turn {
+            border: 3px solid #1f7a45;
+            background-color: #effcf3;
+        }
+
+        .item {
+            background-color: #f5f8fb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .item-name {
+            font-size: 26px;
+            font-weight: bold;
+            color: #1f3a5f;
+        }
+
+        .price {
+            font-size: 23px;
+            margin: 12px;
+            font-weight: bold;
+        }
+
+        .bid-controls {
+            margin-top: 20px;
+        }
+
+        input[type="number"] {
+            padding: 12px;
+            width: 180px;
+            border: 2px solid #ccd6e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        /* BOTS */
+
+        .bots {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .bot {
+            padding: 15px;
+            background-color: #f5f8fb;
+            border-radius: 10px;
+        }
+
+        .bot-name {
+            font-weight: bold;
+            color: #1f3a5f;
+            font-size: 18px;
+        }
+
+        .bot-money {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .status {
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        /* EVENTS */
+
+        .event {
+            background: linear-gradient(135deg, #fff8e7, #fff);
+            border: 2px solid #e5bd61;
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        /* PITCH */
+
+        .pitch-box {
+            background-color: #fff8df;
+            border-left: 5px solid #d99b00;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            resize: vertical;
+            padding: 12px;
+            border: 2px solid #ccd6e0;
+            border-radius: 8px;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        /* TRIP */
+
+        .trip-item {
+            background-color: #f1f5f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .trip-item strong {
+            color: #1f3a5f;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .success {
+            color: #187a3d;
+            font-weight: bold;
+        }
+
+        .not-your-turn {
+            color: #a52828;
+            font-weight: bold;
+        }
+
+        .danger {
+            color: #a52828;
+            font-weight: bold;
+        }
+
+        .warning {
+            color: #9b6800;
+            font-weight: bold;
+        }
+
+        .next-round {
+            background-color: #187a3d;
+            font-size: 17px;
+            padding: 15px 30px;
+        }
+
+        .next-round:hover {
+            background-color: #125c30;
+        }
+
+        .aggressive {
+            border: 2px solid #d99b00;
+        }
+
+        @media (max-width: 800px) {
+
+            .continent-grid,
+            .bots,
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+        }
+
+        @media (max-width: 550px) {
+
+            .continent-grid,
+            .bots,
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+            .money-bar {
+                position: sticky;
+                top: 72px;
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<nav class="Itop">
+    <h1>Eli Fish</h1>
+
+    <ul>
+        <li><a href="HomePage.html">Home</a></li>
+        <li><a href="InterestPage.html">Interests</a></li>
+        <li><a href="ResumePage.html">Resume</a></li>
+        <li><a href="games.html">Games</a></li>
+    </ul>
+</nav>
+
+<header class="game-header">
+    <h1>🌎 Travel Tycoon</h1>
+
+    <p>
+        Build the ultimate travel experience without going broke.
+    </p>
+</header>
+
+
+<div class="container">
+
+
+    <!-- START SCREEN -->
+
+    <div class="card" id="startScreen">
+
+        <h2>Welcome to Travel Tycoon</h2>
+
+        <p>
+            You have <strong>$10,000</strong> to build the trip of a lifetime.
+        </p>
+
+        <p>
+            Your starting continent determines your baseline trip,
+            available experiences, and some of the opportunities
+            you will encounter.
+        </p>
+
+        <h3>Choose where your journey begins:</h3>
+
+
+        <div class="continent-grid">
+
+
+            <div class="continent"
+                 onclick="selectContinent('Europe', this)">
+
+                <span class="emoji">🇪🇺</span>
+
+                <strong>Europe</strong>
+
+                <p>
+                    History, transportation, and culture
+                </p>
+
+            </div>
+
+
+            <div class="continent"
+                 onclick="selectContinent('Asia', this)">
+
+                <span class="emoji">🌏</span>
+
+                <strong>Asia</strong>
+
+                <p>
+                    Food, culture, and diversity
+                </p>
+
+            </div>
+
+
+            <div class="continent"
+                 onclick="selectContinent('Africa', this)">
+
+                <span class="emoji">🌍</span>
+
+                <strong>Africa</strong>
+
+                <p>
+                    Wildlife and adventure
+                </p>
+
+            </div>
+
+
+            <div class="continent"
+                 onclick="selectContinent('North America', this)">
+
+                <span class="emoji">🌎</span>
+
+                <strong>North America</strong>
+
+                <p>
+                    Variety and comfort
+                </p>
+
+            </div>
+
+
+            <div class="continent"
+                 onclick="selectContinent('South America', this)">
+
+                <span class="emoji">🌎</span>
+
+                <strong>South America</strong>
+
+                <p>
+                    Adventure and culture
+                </p>
+
+            </div>
+
+
+            <div class="continent"
+                 onclick="selectContinent('Oceania', this)">
+
+                <span class="emoji">🌊</span>
+
+                <strong>Oceania</strong>
+
+                <p>
+                    Islands and outdoor adventure
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+        <div style="text-align:center; margin-top:25px;">
+
+            <button id="startButton"
+                    onclick="startGame()"
+                    disabled>
+
+                Start Journey
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- GAME SCREEN -->
+
+    <div id="gameScreen" class="hidden">
+
+
+        <!-- MONEY BAR -->
+
+        <div class="money-bar">
+
+            <div class="money-title">
+                💰 MONEY AVAILABLE FOR AUCTIONS
+            </div>
+
+            <div class="money-amount money-remaining"
+                 id="moneyTop">
+
+                $10,000
+
+            </div>
+
+        </div>
+
+
+
+        <!-- STATS -->
+
+        <div class="card">
+
+            <h2>Your Trip</h2>
+
+            <div class="stats">
+
+
+                <div class="stat">
+
+                    Auction Money
+
+                    <strong id="money">
+                        $10,000
+                    </strong>
+
+                </div>
+
+
+                <div class="stat">
+
+                    Base Trip Cost
+
+                    <strong id="baseCost">
+                        $0
+                    </strong>
+
+                </div>
+
+
+                <div class="stat">
+
+                    Trip Value
+
+                    <strong id="tripValue">
+                        $0
+                    </strong>
+
+                </div>
+
+
+                <div class="stat">
+
+                    Items Purchased
+
+                    <strong id="itemCount">
+                        0
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- BASELINE -->
+
+        <div class="card">
+
+            <h2>✈️ Your Baseline Trip</h2>
+
+            <p id="baselineDescription"></p>
+
+            <p>
+                Your basic trip costs:
+                <strong id="baselineValue">$0</strong>
+            </p>
+
+            <p>
+                This amount has already been removed from your
+                $10,000 budget.
+            </p>
+
+            <p class="success">
+
+                Money remaining for auctions:
+
+                <strong id="baselineRemaining"></strong>
+
+            </p>
+
+        </div>
+
+
+
+        <!-- AUCTION -->
+
+        <div class="card auction-box"
+             id="auctionCard">
+
+            <h2>🔨 Current Auction</h2>
+
+
+            <div class="item">
+
+                <div class="item-name"
+                     id="auctionName">
+
+                    Ready for Auction
+
+                </div>
+
+
+                <p id="auctionDescription">
+
+                    Start the auction when you are ready.
+
+                </p>
+
+
+                <p>
+
+                    Estimated Experience Value:
+
+                    <strong id="marketValue">
+                        $0
+                    </strong>
+
+                </p>
+
+
+                <div class="price">
+
+                    Current Bid:
+
+                    <span id="currentBid">
+                        $0
+                    </span>
+
+                </div>
+
+
+                <p>
+
+                    Highest Bidder:
+
+                    <strong id="highestBidder">
+                        Nobody
+                    </strong>
+
+                </p>
+
+            </div>
+
+
+            <div class="bid-controls">
+
+                <p id="turnMessage">
+                    Waiting...
+                </p>
+
+
+                <input
+                    type="number"
+                    id="bidInput"
+                    placeholder="Enter bid"
+                    min="1"
+                >
+
+
+                <br>
+
+
+                <button id="bidButton"
+                        onclick="placeBid()">
+
+                    💰 Place Bid
+
+                </button>
+
+
+                <button id="foldButton"
+                        onclick="playerFold()">
+
+                    ✋ Fold
+
+                </button>
+
+            </div>
+
+
+            <p id="auctionMessage"></p>
+
+
+            <button id="nextRoundButton"
+                    class="next-round hidden"
+                    onclick="startNextRound()">
+
+                🔨 Start Next Auction
+
+            </button>
+
+        </div>
+
+
+
+        <!-- BOTS -->
+
+        <div class="card">
+
+            <h2>🤖 Your Competition</h2>
+
+            <div class="bots">
+
+
+                <div class="bot">
+
+                    <div class="bot-name">
+                        Sophia
+                    </div>
+
+                    <p>
+                        Culture Traveler
+                    </p>
+
+                    <p>
+                        Loves:
+                        <strong>Culture & Food</strong>
+                    </p>
+
+                    Money:
+
+                    <div class="bot-money"
+                         id="bot0money">
+
+                        $10,000
+
+                    </div>
+
+                    <div id="bot0status"
+                         class="status">
+
+                        Waiting
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="bot">
+
+                    <div class="bot-name">
+                        Marcus
+                    </div>
+
+                    <p>
+                        Luxury Traveler
+                    </p>
+
+                    <p>
+                        Loves:
+                        <strong>Luxury & Transportation</strong>
+                    </p>
+
+                    Money:
+
+                    <div class="bot-money"
+                         id="bot1money">
+
+                        $10,000
+
+                    </div>
+
+                    <div id="bot1status"
+                         class="status">
+
+                        Waiting
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="bot">
+
+                    <div class="bot-name">
+                        Jamie
+                    </div>
+
+                    <p>
+                        Adventure Traveler
+                    </p>
+
+                    <p>
+                        Loves:
+                        <strong>Adventure & Exploration</strong>
+                    </p>
+
+                    Money:
+
+                    <div class="bot-money"
+                         id="bot2money">
+
+                        $10,000
+
+                    </div>
+
+                    <div id="bot2status"
+                         class="status">
+
+                        Waiting
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- FINAL PITCH -->
+
+        <div class="card pitch-box hidden"
+             id="pitchCard">
+
+            <h2>🎤 Pitch Your Own Experience</h2>
+
+            <p>
+                This is the final auction of the game.
+            </p>
+
+            <p>
+                Create your own travel experience.
+                The other travelers will compete aggressively
+                to buy your idea.
+            </p>
+
+            <textarea
+                id="pitchText"
+                placeholder="Example: Spend four days living with a local family in Taiwan, learning Mandarin, cooking traditional food, and exploring a night market with them."
+                disabled>
+            </textarea>
+
+            <button id="pitchButton"
+                    onclick="submitPitch()"
+                    disabled>
+
+                🎤 Submit Final Experience
+
+            </button>
+
+            <div id="pitchResult"></div>
+
+        </div>
+
+
+
+        <!-- TRIP -->
+
+        <div class="card">
+
+            <h2>🧳 Your Trip So Far</h2>
+
+            <div id="tripList">
+
+                <p>
+                    Your baseline trip is ready.
+                </p>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- END SCREEN -->
+
+    <div class="card hidden"
+         id="endScreen">
+
+        <h2>
+            🏆 Journey Complete!
+        </h2>
+
+        <p id="finalMessage"></p>
+
+        <h3>
+            Your Final Trip
+        </h3>
+
+        <div id="finalTrip"></div>
+
+        <button onclick="location.reload()">
+            Play Again
+        </button>
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+/* =========================================
+   PLAYER
+========================================= */
+
+let player = {
+
+    money: 10000,
+
+    baseCost: 0,
+
+    items: [],
+
+    value: 0,
+
+    continent: ""
+
+};
+
+
+let selectedContinent = "";
+
+
+
+/* =========================================
+   BOTS
+========================================= */
+
+let bots = [
+
+    {
+        name: "Sophia",
+
+        money: 10000,
+
+        items: [],
+
+        personality: "culture",
+
+        active: true,
+
+        acted: false
+    },
+
+
+    {
+        name: "Marcus",
+
+        money: 10000,
+
+        items: [],
+
+        personality: "luxury",
+
+        active: true,
+
+        acted: false
+    },
+
+
+    {
+        name: "Jamie",
+
+        money: 10000,
+
+        items: [],
+
+        personality: "adventure",
+
+        active: true,
+
+        acted: false
+    }
+
+];
+
+
+
+/* =========================================
+   GAME STATE
+========================================= */
+
+let auctionItems = [];
+
+let currentAuction = 0;
+
+let currentBid = 0;
+
+let highestBidder = "Nobody";
+
+let auctionActive = false;
+
+let playerActive = true;
+
+let playerTurn = false;
+
+let botIndex = 0;
+
+let finalPitchMode = false;
+
+let finalExperience = null;
+
+
+
+/* =========================================
+   CONTINENTS
+========================================= */
+
+const continentInfo = {
+
+    Europe: {
+
+        baseline: 3500,
+
+        description:
+            "Your European journey begins with transportation, accommodation, basic food, and access to major historical and cultural sites."
+
+    },
+
+
+    Asia: {
+
+        baseline: 3200,
+
+        description:
+            "Your Asian journey begins with transportation, accommodation, basic food, and access to cultural destinations."
+
+    },
+
+
+    Africa: {
+
+        baseline: 3300,
+
+        description:
+            "Your African journey begins with transportation, accommodation, basic food, and access to nature and wildlife destinations."
+
+    },
+
+
+    "North America": {
+
+        baseline: 3400,
+
+        description:
+            "Your North American journey begins with transportation, accommodation, basic food, and access to major destinations."
+
+    },
+
+
+    "South America": {
+
+        baseline: 3100,
+
+        description:
+            "Your South American journey begins with transportation, accommodation, basic food, and access to cultural and natural destinations."
+
+    },
+
+
+    Oceania: {
+
+        baseline: 3600,
+
+        description:
+            "Your Oceania journey begins with transportation, accommodation, basic food, and access to beaches and outdoor destinations."
+
+    }
+
+};
+
+
+
+/* =========================================
+   AUCTION ITEMS
+========================================= */
+
+const baseItems = [
+
+
+    {
+        name: "Round-Trip International Flight",
+
+        description:
+            "Upgrade your transportation with a comfortable international flight.",
+
+        value: 1800,
+
+        startingBid: 400,
+
+        type: "transport"
+    },
+
+
+    {
+        name: "Luxury Hotel Upgrade",
+
+        description:
+            "Upgrade your accommodation to a high-end hotel.",
+
+        value: 1600,
+
+        startingBid: 350,
+
+        type: "luxury"
+    },
+
+
+    {
+        name: "Street Food Tour",
+
+        description:
+            "Explore the best local food spots with a knowledgeable guide.",
+
+        value: 900,
+
+        startingBid: 150,
+
+        type: "food"
+    },
+
+
+    {
+        name: "Private Cultural Tour",
+
+        description:
+            "A local expert gives you a private tour of the area's culture.",
+
+        value: 1300,
+
+        startingBid: 250,
+
+        type: "culture"
+    },
+
+
+    {
+        name: "National Park Adventure",
+
+        description:
+            "Spend a full day exploring a famous national park.",
+
+        value: 1400,
+
+        startingBid: 300,
+
+        type: "adventure"
+    },
+
+
+    {
+        name: "Local Cooking Class",
+
+        description:
+            "Learn to prepare traditional dishes from a local chef.",
+
+        value: 800,
+
+        startingBid: 100,
+
+        type: "food"
+    },
+
+
+    {
+        name: "Private Transportation",
+
+        description:
+            "Have a private driver available during your trip.",
+
+        value: 1100,
+
+        startingBid: 200,
+
+        type: "transport"
+    },
+
+
+    {
+        name: "Hidden Village Experience",
+
+        description:
+            "Visit a remote community and experience local traditions.",
+
+        value: 1500,
+
+        startingBid: 300,
+
+        type: "culture"
+    },
+
+
+    {
+        name: "Luxury Dinner",
+
+        description:
+            "Enjoy an unforgettable multi-course local dinner.",
+
+        value: 1000,
+
+        startingBid: 150,
+
+        type: "luxury"
+    },
+
+
+    {
+        name: "Scenic Helicopter Tour",
+
+        description:
+            "See your destination from an incredible aerial perspective.",
+
+        value: 1700,
+
+        startingBid: 400,
+
+        type: "luxury"
+    }
+
+];
+
+
+
+/* =========================================
+   CONTINENT-SPECIFIC ITEMS
+========================================= */
+
+const continentItems = {
+
+
+    Europe: [
+
+        {
+            name: "European Rail Pass",
+
+            description:
+                "Travel between multiple European countries by train.",
+
+            value: 1700,
+
+            startingBid: 400,
+
+            type: "transport"
+        },
+
+
+        {
+            name: "Historic Castle Tour",
+
+            description:
+                "Explore several famous castles and historic sites.",
+
+            value: 1200,
+
+            startingBid: 200,
+
+            type: "culture"
+        }
+
+    ],
+
+
+    Asia: [
+
+        {
+            name: "Night Market Food Crawl",
+
+            description:
+                "Explore famous Asian night markets and local food stalls.",
+
+            value: 1100,
+
+            startingBid: 150,
+
+            type: "food"
+        },
+
+
+        {
+            name: "Temple & Heritage Tour",
+
+            description:
+                "Explore historic temples and cultural landmarks.",
+
+            value: 1400,
+
+            startingBid: 250,
+
+            type: "culture"
+        }
+
+    ],
+
+
+    Africa: [
+
+        {
+            name: "Safari Expedition",
+
+            description:
+                "Take a guided safari through a major wildlife reserve.",
+
+            value: 2000,
+
+            startingBid: 500,
+
+            type: "adventure"
+        },
+
+
+        {
+            name: "Desert Expedition",
+
+            description:
+                "Spend a night exploring a dramatic desert landscape.",
+
+            value: 1600,
+
+            startingBid: 350,
+
+            type: "adventure"
+        }
+
+    ],
+
+
+    "North America": [
+
+        {
+            name: "National Park Road Trip",
+
+            description:
+                "Take a guided road trip through several national parks.",
+
+            value: 1500,
+
+            startingBid: 300,
+
+            type: "adventure"
+        },
+
+
+        {
+            name: "Broadway & NYC Experience",
+
+            description:
+                "Premium theater tickets and a night in New York City.",
+
+            value: 1400,
+
+            startingBid: 300,
+
+            type: "culture"
+        }
+
+    ],
+
+
+    "South America": [
+
+        {
+            name: "Amazon Expedition",
+
+            description:
+                "Explore the Amazon with experienced guides.",
+
+            value: 2000,
+
+            startingBid: 500,
+
+            type: "adventure"
+        },
+
+
+        {
+            name: "Andes Cultural Experience",
+
+            description:
+                "Explore communities and traditions in the Andes.",
+
+            value: 1500,
+
+            startingBid: 250,
+
+            type: "culture"
+        }
+
+    ],
+
+
+    Oceania: [
+
+        {
+            name: "Great Barrier Reef Dive",
+
+            description:
+                "Explore the Great Barrier Reef with professional guides.",
+
+            value: 1800,
+
+            startingBid: 400,
+
+            type: "adventure"
+        },
+
+
+        {
+            name: "Island-Hopping Cruise",
+
+            description:
+                "Visit several beautiful islands by boat.",
+
+            value: 1900,
+
+            startingBid: 450,
+
+            type: "adventure"
+        }
+
+    ]
+
+};
+
+
+
+/* =========================================
+   SELECT CONTINENT
+========================================= */
+
+function selectContinent(continent, element) {
+
+    selectedContinent = continent;
+
+
+    document.querySelectorAll(".continent")
+        .forEach(function(item) {
+
+            item.classList.remove("selected");
+
+        });
+
+
+    element.classList.add("selected");
+
+
+    document.getElementById("startButton")
+        .disabled = false;
+
+}
+
+
+
+/* =========================================
+   START GAME
+========================================= */
+
+function startGame() {
+
+    player.continent =
+        selectedContinent;
+
+
+    player.baseCost =
+        continentInfo[selectedContinent].baseline;
+
+
+    player.money =
+        10000 - player.baseCost;
+
+
+    player.value =
+        player.baseCost;
+
+
+    document.getElementById("startScreen")
+        .classList.add("hidden");
+
+
+    document.getElementById("gameScreen")
+        .classList.remove("hidden");
+
+
+    document.getElementById("baselineDescription")
+        .textContent =
+        continentInfo[selectedContinent].description;
+
+
+    document.getElementById("baselineValue")
+        .textContent =
+        "$" +
+        player.baseCost.toLocaleString();
+
+
+    document.getElementById("baselineRemaining")
+        .textContent =
+        "$" +
+        player.money.toLocaleString();
+
+
+    let continentOptions =
+        [...continentItems[selectedContinent]];
+
+
+    let normalOptions =
+        shuffle([...baseItems]);
+
+
+    auctionItems =
+        continentOptions.concat(
+            normalOptions.slice(0, 6)
+        );
+
+
+    updateDisplay();
+
+
+    document.getElementById("auctionMessage")
+        .textContent =
+        "Your baseline trip has been paid for. You have $" +
+        player.money.toLocaleString() +
+        " available for auctions.";
+
+
+    document.getElementById("nextRoundButton")
+        .classList.remove("hidden");
+
+
+    document.getElementById("nextRoundButton")
+        .textContent =
+        "🔨 Start First Auction";
+
+}
+
+
+
+/* =========================================
+   START NEXT ROUND
+========================================= */
+
+function startNextRound() {
+
+    document.getElementById("nextRoundButton")
+        .classList.add("hidden");
+
+
+    if (
+        currentAuction >= auctionItems.length
+    ) {
+
+        enableFinalPitch();
+
+        return;
+
+    }
+
+
+    startAuction();
+
+}
+
+
+
+/* =========================================
+   START AUCTION
+========================================= */
+
+function startAuction() {
+
+    const item =
+        auctionItems[currentAuction];
+
+
+    currentBid =
+        item.startingBid;
+
+
+    highestBidder =
+        "Nobody";
+
+
+    auctionActive =
+        true;
+
+
+    playerActive =
+        true;
+
+
+    playerTurn =
+        false;
+
+
+    bots.forEach(function(bot) {
+
+        bot.active = true;
+
+        bot.acted = false;
+
+    });
+
+
+    botIndex = 0;
+
+
+    document.getElementById("auctionName")
+        .textContent =
+        item.name;
+
+
+    document.getElementById("auctionDescription")
+        .textContent =
+        item.description;
+
+
+    document.getElementById("marketValue")
+        .textContent =
+        "$" +
+        item.value.toLocaleString();
+
+
+    document.getElementById("currentBid")
+        .textContent =
+        "$" +
+        currentBid.toLocaleString();
+
+
+    document.getElementById("highestBidder")
+        .textContent =
+        "Nobody";
+
+
+    document.getElementById("auctionMessage")
+        .textContent =
+        "The auction is ready.";
+
+
+    givePlayerTurn();
+
+
+    updateDisplay();
+
+}
+
+
+
+/* =========================================
+   PLAYER TURN
+========================================= */
+
+function givePlayerTurn() {
+
+    if (!auctionActive) {
+        return;
+    }
+
+
+    if (!playerActive) {
+
+        startBotTurn();
+
+        return;
+
+    }
+
+
+    playerTurn =
+        true;
+
+
+    document.getElementById("auctionCard")
+        .classList.add("your-turn");
+
+
+    document.getElementById("turnMessage")
+        .textContent =
+        "🟢 YOUR TURN — place a bid or fold.";
+
+
+    document.getElementById("turnMessage")
+        .className =
+        "success";
+
+
+    document.getElementById("bidButton")
+        .disabled = false;
+
+
+    document.getElementById("foldButton")
+        .disabled = false;
+
+
+    document.getElementById("bidInput")
+        .disabled = false;
+
+
+    document.getElementById("bidInput")
+        .focus();
+
+}
+
+
+
+/* =========================================
+   PLAYER BID
+========================================= */
+
+function placeBid() {
+
+    if (!auctionActive || !playerTurn) {
+        return;
+    }
+
+
+    const bid =
+        Number(
+            document.getElementById("bidInput").value
+        );
+
+
+    if (
+        !bid ||
+        bid <= currentBid
+    ) {
+
+        document.getElementById("auctionMessage")
+            .textContent =
+            "Your bid must be higher than $" +
+            currentBid.toLocaleString();
+
+        return;
+
+    }
+
+
+    if (bid > player.money) {
+
+        document.getElementById("auctionMessage")
+            .textContent =
+            "You only have $" +
+            player.money.toLocaleString() +
+            " available.";
+
+        return;
+
+    }
+
+
+    currentBid =
+        bid;
+
+
+    highestBidder =
+        "You";
+
+
+    playerTurn =
+        false;
+
+
+    document.getElementById("bidInput")
+        .value = "";
+
+
+    disablePlayerControls();
+
+
+    document.getElementById("auctionMessage")
+        .textContent =
+        "You bid $" +
+        bid.toLocaleString() +
+        ". The other travelers are responding...";
+
+
+    resetBotTurns();
+
+
+    updateDisplay();
+
+
+    setTimeout(
+        startBotTurn,
+        700
+    );
+
+}
+
+
+
+/* =========================================
+   PLAYER FOLD
+========================================= */
+
+function playerFold() {
+
+    if (!auctionActive || !playerTurn) {
+        return;
+    }
+
+
+    playerActive =
+        false;
+
+
+    playerTurn =
+        false;
+
+
+    disablePlayerControls();
+
+
+    document.getElementById("auctionCard")
+        .classList.remove("your-turn");
+
+
+    document.getElementById("turnMessage")
+        .textContent =
+        "You folded. Watch the remaining bidders.";
+
+
+    resetBotTurns();
+
+
+    setTimeout(
+        startBotTurn,
+        700
+    );
+
+}
+
+
+
+/* =========================================
+   RESET BOT TURNS
+========================================= */
+
+function resetBotTurns() {
+
+    bots.forEach(function(bot) {
+
+        if (bot.active) {
+
+            bot.acted = false;
+
+        }
+
+    });
+
+
+    botIndex = 0;
+
+}
+
+
+
+/* =========================================
+   BOT TURN
+========================================= */
+
+function startBotTurn() {
+
+    if (!auctionActive) {
+        return;
+    }
+
+    playerTurn = false;
+
+    document.getElementById("auctionCard")
+        .classList.remove("your-turn");
+
+    document.getElementById("turnMessage")
+        .textContent = "🔴 NOT YOUR TURN — the other travelers are bidding.";
+
+    document.getElementById("turnMessage")
+        .className = "not-your-turn";
+
+    disablePlayerControls();
+
+
+    while (
+        botIndex < bots.length &&
+        (
+            !bots[botIndex].active ||
+            bots[botIndex].acted
+        )
+    ) {
+        botIndex++;
+    }
+
+
+    if (botIndex >= bots.length) {
+
+        if (countActiveBidders() <= 1) {
+
+            finishAuction();
+
+            return;
+        }
+
+        if (playerActive) {
+
+            resetBotTurns();
+
+            setTimeout(
+                givePlayerTurn,
+                500
+            );
+
+        } else {
+
+            resetBotTurns();
+
+            setTimeout(
+                startBotTurn,
+                400
+            );
+
+        }
+
+        return;
+    }
+
+
+    const bot = bots[botIndex];
+
+    botIndex++;
+
+    bot.acted = true;
+
+    botDecision(bot);
+}
+
+/* =========================================
+   AGGRESSIVE BOT DECISION
+========================================= */
+
+function botDecision(bot) {
+
+    const item =
+        finalExperience ||
+        auctionItems[currentAuction];
+
+
+    let interest = 1.00;
+
+
+    /* SOPHIA */
+
+    if (bot.personality === "culture") {
+
+        if (item.type === "culture") {
+
+            interest = 1.45;
+
+        }
+
+        else if (item.type === "food") {
+
+            interest = 1.30;
+
+        }
+
+        else if (item.type === "custom") {
+
+            interest = 1.40;
+
+        }
+
+        else {
+
+            interest = 0.85;
+
+        }
+
+    }
+
+
+    /* MARCUS */
+
+    if (bot.personality === "luxury") {
+
+        if (item.type === "luxury") {
+
+            interest = 1.55;
+
+        }
+
+        else if (item.type === "transport") {
+
+            interest = 1.35;
+
+        }
+
+        else if (item.type === "custom") {
+
+            interest = 1.45;
+
+        }
+
+        else {
+
+            interest = 0.80;
+
+        }
+
+    }
+
+
+    /* JAMIE */
+
+    if (bot.personality === "adventure") {
+
+        if (item.type === "adventure") {
+
+            interest = 1.55;
+
+        }
+
+        else if (item.type === "culture") {
+
+            interest = 1.15;
+
+        }
+
+        else if (item.type === "custom") {
+
+            interest = 1.50;
+
+        }
+
+        else {
+
+            interest = 0.80;
+
+        }
+
+    }
+
+
+    /* FINAL PITCH */
+
+    if (finalPitchMode) {
+
+        interest = 1.80;
+
+    }
+
+
+    /*
+        Determine how much the bot
+        thinks the item is worth.
+    */
+
+    let maxBid =
+        item.value * interest;
+
+
+    /*
+        BOTS CAN NOW SPEND A LOT MORE.
+
+        Normal interest:
+        Up to 85% of their bankroll.
+
+        Strong interest:
+        Up to 95%.
+    */
+
+    let moneyLimit =
+        bot.money * 0.85;
+
+
+    if (interest >= 1.40) {
+
+        moneyLimit =
+            bot.money * 0.95;
+
+    }
+
+
+    maxBid =
+        Math.min(
+            maxBid,
+            moneyLimit
+        );
+
+
+    /*
+        30% chance of an emotional bid.
+
+        This makes the bots less predictable.
+    */
+
+    if (
+        Math.random() < 0.30 &&
+        interest >= 1.25
+    ) {
+
+        maxBid *= 1.15;
+
+    }
+
+
+    /*
+        Larger bid increments make the
+        auctions feel more like actual
+        competitive bidding.
+    */
+
+    let increase;
+
+
+    if (currentBid < 1000) {
+
+        increase =
+            Math.max(
+                150,
+                Math.round(
+                    currentBid * 0.15
+                )
+            );
+
+    }
+
+    else if (currentBid < 2000) {
+
+        increase =
+            Math.max(
+                200,
+                Math.round(
+                    currentBid * 0.12
+                )
+            );
+
+    }
+
+    else {
+
+        increase =
+            Math.max(
+                250,
+                Math.round(
+                    currentBid * 0.10
+                )
+            );
+
+    }
+
+
+    /*
+        20% chance of a BIG jump
+        when they really want it.
+    */
+
+    if (
+        Math.random() < 0.20 &&
+        interest >= 1.25
+    ) {
+
+        increase *= 2;
+
+    }
+
+
+    const proposedBid =
+        Math.ceil(
+            currentBid + increase
+        );
+
+
+    /* FOLD */
+
+    if (
+        proposedBid > maxBid ||
+        proposedBid > bot.money
+    ) {
+
+        bot.active =
+            false;
+
+
+        updateBotStatuses();
+
+
+        document.getElementById(
+            "auctionMessage"
+        ).textContent =
+            bot.name +
+            " has folded.";
+
+
+        if (
+            countActiveBidders() <= 1
+        ) {
+
+            finishAuction();
+
+            return;
+
+        }
+
+
+        setTimeout(
+            startBotTurn,
+            650
+        );
+
+
+        return;
+
+    }
+
+
+    /* BID */
+
+    currentBid =
+        proposedBid;
+
+
+    highestBidder =
+        bot.name;
+
+
+    document.getElementById(
+        "auctionMessage"
+    ).textContent =
+        bot.name +
+        " bid $" +
+        proposedBid.toLocaleString() +
+        ".";
+
+
+    updateDisplay();
+
+
+    setTimeout(
+        startBotTurn,
+        700
+    );
+
+}
+
+
+
+/* =========================================
+   COUNT BIDDERS
+========================================= */
+
+function countActiveBidders() {
+
+    let count = 0;
+
+
+    if (playerActive) {
+
+        count++;
+
+    }
+
+
+    bots.forEach(function(bot) {
+
+        if (bot.active) {
+
+            count++;
+
+        }
+
+    });
+
+
+    return count;
+
+}
+
+
+
+/* =========================================
+   FINISH AUCTION
+========================================= */
+
+function finishAuction() {
+
+    if (!auctionActive) {
+        return;
+    }
+
+
+    auctionActive =
+        false;
+
+
+    playerTurn =
+        false;
+
+
+    disablePlayerControls();
+
+
+    document.getElementById("auctionCard")
+        .classList.remove("your-turn");
+
+
+    const item =
+        finalExperience ||
+        auctionItems[currentAuction];
+
+
+    /* PLAYER WINS */
+
+    if (
+        highestBidder === "You"
+    ) {
+
+        player.money -=
+            currentBid;
+
+
+        player.items.push(
+            item
+        );
+
+
+        player.value +=
+            item.value;
+
+
+        document.getElementById(
+            "auctionMessage"
+        ).innerHTML =
+
+            "<span class='success'>" +
+
+            "🎉 You won " +
+            item.name +
+            " for $" +
+            currentBid.toLocaleString() +
+            "!" +
+
+            "</span>";
+
+    }
+
+
+    /* BOT WINS */
+
+    else if (
+        highestBidder !== "Nobody"
+    ) {
+
+        const winner =
+            bots.find(function(bot) {
+
+                return bot.name ===
+                    highestBidder;
+
+            });
+
+
+        if (winner) {
+
+            winner.money -=
+                currentBid;
+
+
+            winner.items.push(
+                item
+            );
+
+        }
+
+
+        document.getElementById(
+            "auctionMessage"
+        ).textContent =
+
+            highestBidder +
+            " won the auction for $" +
+            currentBid.toLocaleString() +
+            ".";
+
+    }
+
+
+    updateDisplay();
+
+
+    /* FINAL AUCTION */
+
+    if (finalPitchMode) {
+
+        setTimeout(
+            finishGame,
+            1500
+        );
+
+        return;
+
+    }
+
+
+    currentAuction++;
+
+
+    const nextButton =
+        document.getElementById(
+            "nextRoundButton"
+        );
+
+
+    nextButton.classList.remove(
+        "hidden"
+    );
+
+
+    if (
+        currentAuction >=
+        auctionItems.length
+    ) {
+
+        nextButton.textContent =
+            "🎤 Continue to Final Experience";
+
+    }
+
+    else {
+
+        nextButton.textContent =
+            "🔨 Start Next Auction";
+
+    }
+
+
+    document.getElementById(
+        "auctionMessage"
+    ).innerHTML +=
+
+        "<br><br>" +
+
+        "<strong>" +
+
+        "The auction is over. " +
+
+        "Start the next round when you're ready." +
+
+        "</strong>";
+
+}
+
+
+
+/* =========================================
+   FINAL PITCH
+========================================= */
+
+function enableFinalPitch() {
+
+    finalPitchMode =
+        true;
+
+
+    document.getElementById("pitchCard")
+        .classList.remove("hidden");
+
+
+    document.getElementById("pitchText")
+        .disabled = false;
+
+
+    document.getElementById("pitchButton")
+        .disabled = false;
+
+
+    document.getElementById("pitchResult")
+        .innerHTML =
+
+        "<p class='warning'>" +
+
+        "<strong>🔥 FINAL AUCTION UNLOCKED!</strong>" +
+
+        "</p>" +
+
+        "<p>" +
+
+        "Create an experience that would make " +
+        "your trip unforgettable. " +
+
+        "The other travelers are going to want " +
+        "your idea badly." +
+
+        "</p>";
+
+
+    document.getElementById("auctionCard")
+        .classList.add("hidden");
+
+
+    document.getElementById("pitchText")
+        .scrollIntoView({
+            behavior: "smooth"
+        });
+
+}
+
+
+
+/* =========================================
+   SUBMIT PITCH
+========================================= */
+
+function submitPitch() {
+
+    const text =
+        document.getElementById(
+            "pitchText"
+        ).value.trim();
+
+
+    if (text.length < 20) {
+
+        document.getElementById(
+            "pitchResult"
+        ).innerHTML =
+
+            "<p class='danger'>" +
+
+            "Give your experience a little more detail." +
+
+            "</p>";
+
+        return;
+
+    }
+
+
+    let value =
+        1200 +
+        text.length * 10;
+
+
+    value =
+        Math.min(
+            value,
+            3000
+        );
+
+
+    finalExperience = {
+
+        name:
+            "Your Custom Travel Experience",
+
+        description:
+            text,
+
+        value:
+            value,
+
+        startingBid:
+            Math.round(
+                value * 0.25
+            ),
+
+        type:
+            "custom"
+
+    };
+
+
+    document.getElementById("pitchText")
+        .disabled = true;
+
+
+    document.getElementById("pitchButton")
+        .disabled = true;
+
+
+    document.getElementById("pitchResult")
+        .innerHTML =
+
+        "<div class='trip-item'>" +
+
+        "<strong>🔥 Your experience is ready!</strong>" +
+
+        "<p>" +
+        text +
+        "</p>" +
+
+        "<p>" +
+
+        "Estimated Value: " +
+
+        "<strong>$" +
+        value.toLocaleString() +
+        "</strong>" +
+
+        "</p>" +
+
+        "</div>";
+
+
+    document.getElementById("auctionCard")
+        .classList.remove("hidden");
+
+
+    document.getElementById("auctionName")
+        .textContent =
+        "🔥 YOUR CUSTOM EXPERIENCE";
+
+
+    document.getElementById("auctionDescription")
+        .textContent =
+        text;
+
+
+    document.getElementById("marketValue")
+        .textContent =
+        "$" +
+        value.toLocaleString();
+
+
+    currentBid =
+        finalExperience.startingBid;
+
+
+    highestBidder =
+        "Nobody";
+
+
+    auctionActive =
+        true;
+
+
+    playerActive =
+        true;
+
+
+    bots.forEach(function(bot) {
+
+        bot.active =
+            true;
+
+        bot.acted =
+            false;
+
+    });
+
+
+    document.getElementById("currentBid")
+        .textContent =
+        "$" +
+        currentBid.toLocaleString();
+
+
+    document.getElementById("highestBidder")
+        .textContent =
+        "Nobody";
+
+
+    givePlayerTurn();
+
+
+    updateDisplay();
+
+
+    document.getElementById("auctionCard")
+        .scrollIntoView({
+            behavior: "smooth"
+        });
+
+}
+
+
+
+/* =========================================
+   DISABLE PLAYER CONTROLS
+========================================= */
+
+function disablePlayerControls() {
+
+    document.getElementById("bidButton")
+        .disabled = true;
+
+
+    document.getElementById("foldButton")
+        .disabled = true;
+
+
+    document.getElementById("bidInput")
+        .disabled = true;
+
+}
+
+
+
+/* =========================================
+   BOT STATUS
+========================================= */
+
+function updateBotStatuses() {
+
+    bots.forEach(function(bot, index) {
+
+        const moneyElement =
+            document.getElementById(
+                "bot" + index + "money"
+            );
+
+
+        const statusElement =
+            document.getElementById(
+                "bot" + index + "status"
+            );
+
+
+        moneyElement.textContent =
+            "$" +
+            bot.money.toLocaleString();
+
+
+        if (!bot.active) {
+
+            statusElement.textContent =
+                "Folded";
+
+            statusElement.className =
+                "status danger";
+
+        }
+
+        else if (
+            highestBidder === bot.name
+        ) {
+
+            statusElement.textContent =
+                "🔥 Highest Bidder";
+
+            statusElement.className =
+                "status success";
+
+        }
+
+        else {
+
+            statusElement.textContent =
+                "Still bidding";
+
+            statusElement.className =
+                "status";
+
+        }
+
+    });
+
+}
+
+
+
+/* =========================================
+   DISPLAY
+========================================= */
+
+function updateDisplay() {
+
+    document.getElementById("moneyTop")
+        .textContent =
+        "$" +
+        player.money.toLocaleString();
+
+
+    document.getElementById("money")
+        .textContent =
+        "$" +
+        player.money.toLocaleString();
+
+
+    document.getElementById("baseCost")
+        .textContent =
+        "$" +
+        player.baseCost.toLocaleString();
+
+
+    document.getElementById("tripValue")
+        .textContent =
+        "$" +
+        player.value.toLocaleString();
+
+
+    document.getElementById("itemCount")
+        .textContent =
+        player.items.length;
+
+
+    if (auctionActive) {
+
+        document.getElementById("currentBid")
+            .textContent =
+            "$" +
+            currentBid.toLocaleString();
+
+
+        document.getElementById("highestBidder")
+            .textContent =
+            highestBidder;
+
+    }
+
+
+    updateBotStatuses();
+
+    updateTrip();
+
+}
+
+
+
+/* =========================================
+   TRIP DISPLAY
+========================================= */
+
+function updateTrip() {
+
+    const tripList =
+        document.getElementById(
+            "tripList"
+        );
+
+
+    if (
+        player.items.length === 0
+    ) {
+
+        tripList.innerHTML =
+
+            "<div class='trip-item'>" +
+
+            "<strong>✈️ Baseline Trip</strong>" +
+
+            "<br><br>" +
+
+            continentInfo[
+                player.continent
+            ].description +
+
+            "<br><br>" +
+
+            "<strong>Base Cost: $" +
+
+            player.baseCost.toLocaleString() +
+
+            "</strong>" +
+
+            "</div>";
+
+        return;
+
+    }
+
+
+    tripList.innerHTML = "";
+
+
+    const baseline =
+        document.createElement(
+            "div"
+        );
+
+
+    baseline.className =
+        "trip-item";
+
+
+    baseline.innerHTML =
+
+        "<strong>✈️ Baseline Trip</strong>" +
+
+        "<br><br>" +
+
+        continentInfo[
+            player.continent
+        ].description +
+
+        "<br><br>" +
+
+        "<strong>Base Cost: $" +
+
+        player.baseCost.toLocaleString() +
+
+        "</strong>";
+
+
+    tripList.appendChild(
+        baseline
+    );
+
+
+    player.items.forEach(
+        function(item) {
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className =
+                "trip-item";
+
+
+            div.innerHTML =
+
+                "<strong>" +
+                item.name +
+                "</strong>" +
+
+                "<br><br>" +
+
+                item.description +
+
+                "<br><br>" +
+
+                "<strong>Experience Value: $" +
+                item.value.toLocaleString() +
+                "</strong>";
+
+
+            tripList.appendChild(
+                div
+            );
+
+        }
+    );
+
+}
+
+
+
+/* =========================================
+   SHUFFLE
+========================================= */
+
+function shuffle(array) {
+
+    for (
+        let i = array.length - 1;
+        i > 0;
+        i--
+    ) {
+
+        const j =
+            Math.floor(
+                Math.random() *
+                (i + 1)
+            );
+
+
+        [
+            array[i],
+            array[j]
+        ] =
+        [
+            array[j],
+            array[i]
+        ];
+
+    }
+
+
+    return array;
+
+}
+
+
+
+/* =========================================
+   FINISH GAME
+========================================= */
+
+function finishGame() {
+
+    document.getElementById("gameScreen")
+        .classList.add("hidden");
+
+
+    document.getElementById("endScreen")
+        .classList.remove("hidden");
+
+
+    const finalScore =
+        player.money +
+        player.value;
+
+
+    let message;
+
+
+    if (
+        finalScore >= 13000
+    ) {
+
+        message =
+            "🌟 Incredible! You built an extraordinary trip and managed your money extremely well.";
+
+    }
+
+    else if (
+        finalScore >= 10000
+    ) {
+
+        message =
+            "🏆 Great job! You built a strong trip.";
+
+    }
+
+    else if (
+        finalScore >= 7500
+    ) {
+
+        message =
+            "✈️ Not bad! You created a respectable trip.";
+
+    }
+
+    else {
+
+        message =
+            "😬 Your trip could use some work. Try changing your bidding strategy.";
+
+    }
+
+
+    document.getElementById("finalMessage")
+        .innerHTML =
+
+        message +
+
+        "<br><br>" +
+
+        "<strong>Final Score: $" +
+        finalScore.toLocaleString() +
+        "</strong>" +
+
+        "<br>" +
+
+        "Money Remaining: $" +
+        player.money.toLocaleString() +
+
+        "<br>" +
+
+        "Base Trip Cost: $" +
+        player.baseCost.toLocaleString() +
+
+        "<br>" +
+
+        "Additional Trip Value: $" +
+        (
+            player.value -
+            player.baseCost
+        ).toLocaleString();
+
+
+    const finalTrip =
+        document.getElementById(
+            "finalTrip"
+        );
+
+
+    finalTrip.innerHTML = "";
+
+
+    const baseline =
+        document.createElement(
+            "div"
+        );
+
+
+    baseline.className =
+        "trip-item";
+
+
+    baseline.innerHTML =
+
+        "<strong>✈️ Baseline Trip</strong>" +
+
+        "<br><br>" +
+
+        continentInfo[
+            player.continent
+        ].description +
+
+        "<br><br>" +
+
+        "Cost: <strong>$" +
+        player.baseCost.toLocaleString() +
+        "</strong>";
+
+
+    finalTrip.appendChild(
+        baseline
+    );
+
+
+    player.items.forEach(
+        function(item) {
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className =
+                "trip-item";
+
+
+            div.innerHTML =
+
+                "<strong>" +
+                item.name +
+                "</strong>" +
+
+                "<br><br>" +
+
+                item.description;
+
+
+            finalTrip.appendChild(
+                div
+            );
+
+        }
+    );
+
+}
+
+</script>
+
+</body>
+
+</html>
